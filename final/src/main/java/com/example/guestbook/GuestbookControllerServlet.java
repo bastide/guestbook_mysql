@@ -23,7 +23,8 @@ public class GuestbookControllerServlet extends HttpServlet {
 	}
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException {
 		String guestbookName = request.getParameter("guestbookName");
 		if (guestbookName == null) {
 			guestbookName = "default";
@@ -49,7 +50,6 @@ public class GuestbookControllerServlet extends HttpServlet {
 				String authorId = (user == null) ? "Unknown author" : user.getUserId();
 				String authorEmail = (user == null) ? "Unknown email" : user.getEmail();
 				dao.addGreeting(guestbookName, authorId, authorEmail, content);
-
 			}
 			List<Greeting> greetings = dao.findGreetingsIn(guestbookName);
 			request.setAttribute("greetings", greetings);

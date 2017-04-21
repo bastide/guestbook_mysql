@@ -37,10 +37,11 @@ public class GuestBookDAO {
 		return url;
 	}
 
-	public void addGreeting(String book, String authorId, String authorEmail, String content) throws SQLException, ServletException {
+	public void addGreeting(String book, String authorId, String authorEmail, String content)
+			throws SQLException, ServletException {
 		String sql = "INSERT INTO GREETING(book, authorId, authorEmail, content) VALUES(?, ?, ?, ?)";
 		try (Connection conn = DriverManager.getConnection(jdbcUrl());
-			 PreparedStatement create = conn.prepareStatement(sql)) {
+				PreparedStatement create = conn.prepareStatement(sql)) {
 			create.setString(1, book);
 			create.setString(2, authorId);
 			create.setString(3, authorEmail);
@@ -53,13 +54,13 @@ public class GuestBookDAO {
 		LinkedList<String> result = new LinkedList<>();
 		String sql = "SELECT DISTINCT book FROM GREETING ORDER BY book";
 		try (Connection conn = DriverManager.getConnection(jdbcUrl());
-			 Statement select = conn.createStatement();
-			 ResultSet rs = select.executeQuery(sql)) {
+				Statement select = conn.createStatement();
+				ResultSet rs = select.executeQuery(sql)) {
 			while (rs.next()) {
 				result.add(rs.getString("book"));
 			}
 		}
-		
+
 		return result;
 	}
 
@@ -67,7 +68,7 @@ public class GuestBookDAO {
 		LinkedList<Greeting> result = new LinkedList<>();
 		String sql = "SELECT * FROM GREETING WHERE book = ? ORDER BY created DESC";
 		try (Connection conn = DriverManager.getConnection(jdbcUrl());
-			 PreparedStatement create = conn.prepareStatement(sql)) {
+				PreparedStatement create = conn.prepareStatement(sql)) {
 			create.setString(1, book);
 			try (ResultSet rs = create.executeQuery()) {
 				while (rs.next()) {
@@ -75,28 +76,28 @@ public class GuestBookDAO {
 					String authorId = rs.getString("authorId");
 					String authorEmail = rs.getString("authorEmail");
 					String content = rs.getString("content");
-					Timestamp created = rs.getTimestamp("created");	
+					Timestamp created = rs.getTimestamp("created");
 					Greeting g = new Greeting(id, book, authorId, authorEmail, content, created);
 					result.add(g);
-				}				
+				}
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	public Map<String, Integer> getStatistics() throws SQLException, ServletException {
 		HashMap<String, Integer> result = new HashMap<>();
 		String sql = "SELECT book, COUNT(*) AS howMany FROM GREETING GROUP BY book";
 		try (Connection conn = DriverManager.getConnection(jdbcUrl());
-			Statement stats = conn.createStatement();
-			ResultSet rs = stats.executeQuery(sql)) {
-				while (rs.next()) {
-					String book = rs.getString("book");
-					int howMany = rs.getInt("howMany");
-					result.put(book, howMany);
-				}				
-			}		
+				Statement stats = conn.createStatement();
+				ResultSet rs = stats.executeQuery(sql)) {
+			while (rs.next()) {
+				String book = rs.getString("book");
+				int howMany = rs.getInt("howMany");
+				result.put(book, howMany);
+			}
+		}
 		return result;
 	}
 
